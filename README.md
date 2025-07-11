@@ -1,88 +1,87 @@
-# 🚀 Script de Despliegue Laravel + Nginx + Certbot
+# 🚀 Automatización de Servidor para CREAD ONG , EDITABLE!
 
-¡Bienvenido al **Script V!** de despliegue automático para proyectos **Laravel** con **Nginx** y **Certbot**! 😎
-
----
-
-## ✨ Funcionalidad
-
-Este script interactivo automatiza tareas clave para desplegar y mantener proyectos Laravel en servidores Linux:
-
-- 🔄 **Actualización del sistema** (`apt update/upgrade`)
-- 🧬 **Clonado y actualización de repositorios Git**
-- 🎼 **Instalación de dependencias Composer** (y extensiones PHP necesarias)
-- 🛠️ **Instalación y build de dependencias npm** (con chequeo de versión Node)
-- 🧹 **Limpieza y cacheo de Laravel**
-- ♻️ **Reinicio de servicios** (Nginx, PHP-FPM)
-- 🌐 **Configuración de Nginx y Certbot** para HTTPS
-- 🧙 **Modo automático**: ejecuta todo el flujo de despliegue de una sola vez
-- 🖥️ **Menú interactivo** para ejecutar cada paso manualmente
+¡Bienvenido a la suite de scripts de automatización para el servidor de CREAD ONG! Aquí encontrarás herramientas esenciales para mantener, respaldar y asegurar tu infraestructura de producción, tambien editable para otros servidores, o proyectos.
 
 ---
 
-## 🛠️ Cómo usar
+## 📋 Índice
 
-1. **Clona este repositorio o copia el script a tu servidor.**
-2. Dale permisos de ejecución:
+- [¿Qué es esto?](#qué-es-esto)
+- [Requisitos](#requisitos)
+- [Tabla de scripts](#tabla-de-scripts)
+- [Instrucciones de uso](#instrucciones-de-uso)
+- [Recomendaciones](#recomendaciones)
+- [Créditos](#créditos)
+
+---
+
+## 🤔 ¿Qué es esto?
+
+Esta carpeta contiene **scripts bash** para automatizar tareas críticas en servidores Linux con Apache/Nginx, Certbot, Laravel, Node.js y más. ¡Optimiza tu tiempo y reduce errores humanos!
+
+---
+
+## ⚙️ Requisitos
+
+- Linux (Debian/Ubuntu recomendado)
+- Acceso root o sudo
+- Dependencias: `mysqldump`, `mysql`, `tar`, `scp`/`rclone`, `systemctl`, `certbot`, `mail`, `nvm`, `supervisorctl`
+- Laravel `.env` correctamente configurado
+
+---
+
+## 🗂️ Tabla de scripts
+
+| #  | Script                        | ¿Para qué sirve?                                                | Icono |
+|----|-------------------------------|-----------------------------------------------------------------|-------|
+| 1  | `backup.sh`                   | Copia de seguridad diaria del código + BD + .env                | 🗄️    |
+| 2  | `restore.sh`                  | Restaura la copia elegida                                       | ♻️    |
+| 3  | `logs.sh`                     | Empaqueta logs (nginx, php, laravel) + limpia > X días          | 📦    |
+| 4  | `ssl_renovar.sh`              | Fuerza `certbot renew` + recarga Nginx + e-mail si falla        | 🔒    |
+| 5  | `watchdog.sh`                 | Comprueba cada minuto Nginx / PHP-FPM / Node; si caen, reinicia | 🐶    |
+| 6  | `actualizar_seguridad.sh`     | Solo `apt-get --just-kernel upgrade` + reboots programados      | 🛡️    |
+| 7  | `agregar_usuario_deploy.sh`   | Crea usuario “deploy”, sube su llave SSH, limita permisos       | 👤    |
+| 8  | `limpiar_node_modules.sh`     | Borra `node_modules` y `vendor` antiguos en releases pasados    | 🧹    |
+| 9  | `cambiar_node.sh`             | Cambia rápidamente entre Node LTS y la versión exigida          | 🔄    |
+| 10 | `cola_supervisor.sh`          | Lanza/monitorea colas Laravel con `supervisor`                  | 🕹️    |
+
+---
+
+## 🛠️ Instrucciones de uso
+
+1. **Haz ejecutables los scripts:**
    ```bash
-   chmod +x deploy.sh
+   chmod +x *.sh
    ```
-3. Ejecútalo:
+2. **Edita variables si es necesario** (usuario remoto, rutas, emails, etc).
+3. **Ejecuta el script deseado:**
    ```bash
-   ./deploy.sh
+   ./backup.sh
+   ./restore.sh archivo_backup.tar.gz
+   # etc.
    ```
-4. Sigue el menú interactivo:
-   - `1` Actualizar sistema
-   - `2` Clonar repo
-   - `3` Git pull
-   - `4` Composer install
-   - `5` npm build + caches
-   - `6` Reiniciar servicios
-   - `7` Nginx + Certbot
-   - `0` Auto-todo y salir
-   - `q` Salir
-
-5. **Modo automático:**
-   ```bash
-   ./deploy.sh auto
-   ```
-   Ejecuta todo el flujo sin intervención manual.
+4. **Automatiza con cron:**
+   - Ejemplo para backup diario:
+     ```bash
+     0 2 * * * /var/www/cread_front/scripts/backup.sh
+     ```
 
 ---
 
-## ⚠️ Manejo de errores
+## 💡 Recomendaciones
 
-- El script usa `set -euo pipefail` para abortar ante cualquier error inesperado.
-- Mensajes de error claros y coloridos para cada paso fallido.
-- Verifica la existencia de comandos y dependencias antes de instalarlas.
-- Pausa tras cada acción para revisión manual (en modo menú).
-- Si algún paso falla, el script se detiene y muestra el error en rojo 🟥.
-
----
-
-## 🧩 Cambios futuros
-
-- [ ] Soporte para más versiones de PHP y Node
-- [ ] Integración con Docker
-- [ ] Backups automáticos antes de deploy
-- [ ] Logs detallados de cada ejecución
-- [ ] Soporte multi-proyecto y multi-entorno
-- [ ] Mejoras en la detección de errores y rollback
+- **Prueba primero en un entorno de desarrollo.**
+- **Lee el código antes de ejecutar.**
+- **Asegúrate de tener backups remotos.**
+- **Personaliza los scripts según tu infraestructura.**
+- **Mantén tu `.env` seguro y actualizado.**
 
 ---
 
-## 📝 Notas!!
+## 👨‍💻 Créditos
 
-- Requiere permisos de sudo para instalar paquetes y reiniciar servicios.
-- Pensado para Ubuntu/Debian. Puede requerir ajustes en otras distros.
-- Personaliza los servicios a reiniciar editando la variable `SERVICIOS` en el script.
+Desarrollado con ❤️ por [Javier Cerna](https://github.com/Jaacern/)
 
----
+> _"Automatiza todo lo que puedas, pero nunca dejes de aprender."_
 
-## 👨‍💻 Autor
-
-- Javier Cerna — [@javier_cerna_](https://twitter.com/javier_cerna_)
-
----
-
-## 🦾 ¡Despliega como un PRO! 🚀🔥
+--- 
