@@ -71,7 +71,7 @@ Este script interactivo automatiza tareas clave para desplegar y mantener proyec
 
 ---
 
-## 📝 Notas
+## 📝 Notas!!
 
 - Requiere permisos de sudo para instalar paquetes y reiniciar servicios.
 - Pensado para Ubuntu/Debian. Puede requerir ajustes en otras distros.
